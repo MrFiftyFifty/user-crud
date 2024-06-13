@@ -40,6 +40,16 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'birthdate' => 'date',
+        'birthdate' => 'date:Y-m-d', // Кастуем дату в формат Y-m-d
     ];
+
+    /**
+     * Get the user's gender with the first letter capitalized.
+     *
+     * @return string
+     */
+    public function getGenderAttribute($value)
+    {
+        return ucfirst($value);
+    }
 }

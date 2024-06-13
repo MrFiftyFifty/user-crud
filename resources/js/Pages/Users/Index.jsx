@@ -32,7 +32,9 @@ const Index = ({ users }) => {
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>{user.gender}</td>
-                            <td>{user.birthdate}</td>
+                            <td>
+                                {new Date(user.birthdate).toLocaleDateString()}
+                            </td>
                             <td>
                                 <InertiaLink href={`/users/${user.id}/edit`}>
                                     <Button variant="warning" className="me-2">
