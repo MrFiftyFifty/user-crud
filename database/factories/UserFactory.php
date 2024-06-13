@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -12,11 +11,6 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password = null;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -24,11 +18,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'gender' => $this->faker->randomElement(['male', 'female']),
-            'birthdate' => $this->faker->date(),
-            'password' => static::$password ??= Hash::make('password'),
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'gender' => fake()->randomElement(['male', 'female']),
+            'birthdate' => fake()->date(),
             'remember_token' => Str::random(10),
         ];
     }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('gender'); // Пол
             $table->date('birthdate'); // Дата рождения
+            $table->rememberToken(); // Токен для "запомнить меня"
             $table->timestamps();
         });
     }

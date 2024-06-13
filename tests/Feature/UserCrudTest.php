@@ -24,6 +24,8 @@ class UserCrudTest extends TestCase
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
+            'gender' => 'male',
+            'birthdate' => '2000-01-01',
         ]);
     }
 
@@ -55,6 +57,8 @@ class UserCrudTest extends TestCase
             'id' => $user->id,
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
+            'gender' => 'female',
+            'birthdate' => '1990-01-01',
         ]);
     }
 
