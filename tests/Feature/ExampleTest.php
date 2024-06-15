@@ -2,17 +2,19 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
-     * A basic test example.
+     * Проверяет, что приложение возвращает успешный ответ.
      */
-    public function test_the_application_returns_a_successful_response(): void
+    public function test_application_returns_successful_response(): void
     {
-        $response = $this->get('/');
+        $response = $this->get('/users');
 
         $response->assertStatus(200);
     }

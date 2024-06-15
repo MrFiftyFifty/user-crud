@@ -16,7 +16,7 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Test');
+    return redirect('/users');
 });
 
 Route::resource('users', UserController::class);

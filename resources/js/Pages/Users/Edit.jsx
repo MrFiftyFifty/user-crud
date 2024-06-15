@@ -5,7 +5,9 @@ import { Form, Button, Container } from "react-bootstrap";
 const Edit = ({ user }) => {
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
-    const [gender, setGender] = useState(user.gender);
+    const [gender, setGender] = useState(
+        user.gender === "Мужской" ? "male" : "female"
+    );
     const [birthdate, setBirthdate] = useState(user.birthdate);
 
     const handleSubmit = (e) => {
@@ -15,15 +17,15 @@ const Edit = ({ user }) => {
 
     return (
         <Container>
-            <h1 className="my-4">Edit User</h1>
+            <h1 className="my-4">Редактировать пользователя</h1>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>Имя</Form.Label>
                     <Form.Control
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Name"
+                        placeholder="Имя"
                         required
                     />
                 </Form.Group>
@@ -38,19 +40,19 @@ const Edit = ({ user }) => {
                     />
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label>Gender</Form.Label>
+                    <Form.Label>Пол</Form.Label>
                     <Form.Select
                         value={gender}
                         onChange={(e) => setGender(e.target.value)}
                         required
                     >
-                        <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="">Выберите пол</option>
+                        <option value="male">Мужской</option>
+                        <option value="female">Женский</option>
                     </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                    <Form.Label>Birthdate</Form.Label>
+                    <Form.Label>Дата рождения</Form.Label>
                     <Form.Control
                         type="date"
                         value={birthdate}
@@ -59,7 +61,7 @@ const Edit = ({ user }) => {
                     />
                 </Form.Group>
                 <Button variant="primary" type="submit">
-                    Update
+                    Обновить
                 </Button>
             </Form>
         </Container>

@@ -10,27 +10,28 @@ class UserCrudTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function it_can_create_a_user()
+    /**
+     * Проверяет, что можно создать пользователя.
+     */
+    public function test_it_can_create_a_user()
     {
-        $response = $this->post('/users', [
+        $userData = [
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'gender' => 'male',
-            'birthdate' => '2000-01-01',
-        ]);
+            'birthdate' => '2000-01-01 12:00:00',
+        ];
+
+        $response = $this->post('/users', $userData);
 
         $response->assertRedirect('/users');
-        $this->assertDatabaseHas('users', [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'gender' => 'male',
-            'birthdate' => '2000-01-01',
-        ]);
+        $this->assertDatabaseHas('users', $userData);
     }
 
-    /** @test */
-    public function it_can_read_users()
+    /**
+     * Проверяет, что можно получить список пользователей.
+     */
+    public function test_it_can_read_users()
     {
         $user = User::factory()->create();
 
@@ -40,30 +41,30 @@ class UserCrudTest extends TestCase
         $response->assertSee($user->name);
     }
 
-    /** @test */
-    public function it_can_update_a_user()
+    /**
+     * Проверяет, что можно обновить пользователя.
+     */
+    public function test_it_can_update_a_user()
     {
         $user = User::factory()->create();
 
-        $response = $this->put("/users/{$user->id}", [
+        $updatedData = [
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
             'gender' => 'female',
-            'birthdate' => '1990-01-01',
-        ]);
+            'birthdate' => '1990-01-01 12:00:00',
+        ];
+
+        $response = $this->put("/users/{$user->id}", $updatedData);
 
         $response->assertRedirect('/users');
-        $this->assertDatabaseHas('users', [
-            'id' => $user->id,
-            'name' => 'Jane Doe',
-            'email' => 'jane@example.com',
-            'gender' => 'female',
-            'birthdate' => '1990-01-01',
-        ]);
+        $this->assertDatabaseHas('users', array_merge(['id' => $user->id], $updatedData));
     }
 
-    /** @test */
-    public function it_can_delete_a_user()
+    /**
+     * Проверяет, что можно удалить пользователя.
+     */
+    public function test_it_can_delete_a_user()
     {
         $user = User::factory()->create();
 

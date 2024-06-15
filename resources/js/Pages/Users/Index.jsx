@@ -10,20 +10,20 @@ const Index = ({ users }) => {
 
     return (
         <Container>
-            <h1 className="my-4">Users</h1>
+            <h1 className="my-4">Пользователи</h1>
             <InertiaLink href="/users/create">
                 <Button variant="primary" className="mb-3">
-                    Create User
+                    Создать пользователя
                 </Button>
             </InertiaLink>
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Имя</th>
                         <th>Email</th>
-                        <th>Gender</th>
-                        <th>Birthdate</th>
-                        <th>Actions</th>
+                        <th>Пол</th>
+                        <th>Дата рождения</th>
+                        <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,14 +38,14 @@ const Index = ({ users }) => {
                             <td>
                                 <InertiaLink href={`/users/${user.id}/edit`}>
                                     <Button variant="warning" className="me-2">
-                                        Edit
+                                        Редактировать
                                     </Button>
                                 </InertiaLink>
                                 <Button
                                     variant="danger"
                                     onClick={() => handleDelete(user.id)}
                                 >
-                                    Delete
+                                    Удалить
                                 </Button>
                             </td>
                         </tr>
