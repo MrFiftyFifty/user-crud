@@ -11,7 +11,7 @@ class UserCrudTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Проверяет, что можно создать пользователя.
+     * Test that a user can be created.
      */
     public function test_it_can_create_a_user()
     {
@@ -29,7 +29,7 @@ class UserCrudTest extends TestCase
     }
 
     /**
-     * Проверяет, что можно получить список пользователей.
+     * Test that users can be read.
      */
     public function test_it_can_read_users()
     {
@@ -42,7 +42,7 @@ class UserCrudTest extends TestCase
     }
 
     /**
-     * Проверяет, что можно обновить пользователя.
+     * Test that a user can be updated.
      */
     public function test_it_can_update_a_user()
     {
@@ -62,7 +62,7 @@ class UserCrudTest extends TestCase
     }
 
     /**
-     * Проверяет, что можно удалить пользователя.
+     * Test that a user can be deleted.
      */
     public function test_it_can_delete_a_user()
     {
