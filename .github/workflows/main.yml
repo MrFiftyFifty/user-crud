@@ -51,12 +51,6 @@ jobs:
       - name: Run migrations
         run: php artisan migrate
 
-      - name: Run PHP CodeSniffer
-        run: vendor/bin/phpcs .
-
-      - name: Run PHP Code Beautifier and Fixer
-        run: vendor/bin/phpcbf .
-
       - name: Run Pint with fix
         run: vendor/bin/pint
 
@@ -101,6 +95,9 @@ jobs:
 
       - name: Run migrations
         run: php artisan migrate
+
+      - name: Build assets with Vite
+        run: npm run build
 
       - name: Run tests
         run: php artisan test
