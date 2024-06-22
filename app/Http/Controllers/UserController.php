@@ -42,6 +42,16 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified user.
+     *
+     * @return \Inertia\Response
+     */
+    public function show(User $user)
+    {
+        return Inertia::render('Users/Show', ['user' => $user]);
+    }
+
+    /**
      * Show the form for editing the specified user.
      *
      * @return \Inertia\Response
