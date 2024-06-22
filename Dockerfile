@@ -19,23 +19,23 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | b
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Копируем файлы проекта в контейнер
-COPY . /home/mrfiftyfifty/user-crud
+COPY . /var/www/html
 
 # Устанавливаем права на папку проекта
-RUN chown -R www-data:www-data /home/mrfiftyfifty/user-crud \
-    && chmod -R 777 /home/mrfiftyfifty/user-crud
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 777 /var/www/html
 
 # Устанавливаем зависимости проекта
-WORKDIR /home/mrfiftyfifty/user-crud
+WORKDIR /var/www/html
 RUN npm ci \
     && composer install \
     && npm install
 
 # Копируем .env.example в .env и генерируем ключ приложения
 RUN cp .env.example .env \
-    && mkdir -p /home/mrfiftyfifty/user-crud/database \
-    && echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env \
-    && touch /home/mrfiftyfifty/user-crud/database/database.sqlite \
+    && mkdir -p database \
+    && echo 'DB_DATABASE=database/database.sqlite' >> .env \
+    && touch database/database.sqlite \
     && php artisan key:generate
 
 # Выполняем миграции
@@ -44,8 +44,8 @@ RUN php artisan migrate
 # Настраиваем Apache
 RUN echo '<VirtualHost *:80>\n\
     ServerName 158.160.150.83\n\
-    DocumentRoot /home/mrfiftyfifty/user-crud/public\n\
-    <Directory /home/mrfiftyfifty/user-crud/public>\n\
+    DocumentRoot /var/www/html/public\n\
+    <Directory /var/www/html/public>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
     Require all granted\n\

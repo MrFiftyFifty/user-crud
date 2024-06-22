@@ -55,7 +55,7 @@
       lineinfile:
         path: /home/mrfiftyfifty/user-crud/.env
         regexp: "^DB_DATABASE="
-        line: "DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite"
+        line: "DB_DATABASE=database/database.sqlite"
         create: yes
 
     - name: Create SQLite database file
