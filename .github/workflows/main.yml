@@ -23,7 +23,7 @@ jobs:
           extensions: mbstring, xml, sqlite3
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Install Node.js
         uses: actions/setup-node@v2
@@ -53,7 +53,7 @@ jobs:
           extensions: mbstring, xml, sqlite3
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Install Node.js
         uses: actions/setup-node@v2
