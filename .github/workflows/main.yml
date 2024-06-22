@@ -36,8 +36,8 @@ jobs:
       - name: Run Duster
         run: vendor/bin/duster
 
-      - name: Run TLint
-        run: vendor/bin/tlint lint
+      - name: Run PHP_CodeSniffer
+        run: vendor/bin/phpcs --standard=PSR12 app/ tests/
 
   test:
     runs-on: ubuntu-latest
@@ -68,6 +68,9 @@ jobs:
 
       - name: Add database path to .env
         run: echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env
+
+      - name: Create SQLite database file
+        run: touch /home/mrfiftyfifty/user-crud/database/database.sqlite
 
       - name: Generate application key
         run: php artisan key:generate

@@ -34,6 +34,7 @@ RUN npm ci \
 # Копируем .env.example в .env и генерируем ключ приложения
 RUN cp .env.example .env \
     && echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env \
+    && touch /home/mrfiftyfifty/user-crud/database/database.sqlite \
     && php artisan key:generate
 
 # Выполняем миграции

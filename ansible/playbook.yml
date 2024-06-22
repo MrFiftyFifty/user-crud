@@ -53,6 +53,11 @@
         line: "DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite"
         create: yes
 
+    - name: Create SQLite database file
+      file:
+        path: /home/mrfiftyfifty/user-crud/database/database.sqlite
+        state: touch
+
     - name: Generate application key
       shell: php artisan key:generate
       args:
