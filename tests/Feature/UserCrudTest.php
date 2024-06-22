@@ -21,7 +21,7 @@ class UserCrudTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'gender' => 'male',
-            'birthdate' => '2000-01-01 12:00:00',
+            'birthdate' => '2000-01-01',
         ];
 
         $response = $this->post('/users', $userData);
@@ -58,7 +58,7 @@ class UserCrudTest extends TestCase
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
             'gender' => 'female',
-            'birthdate' => '1990-01-01 12:00:00',
+            'birthdate' => '1990-01-01',
         ];
 
         $response = $this->put("/users/{$user->id}", $updatedData);

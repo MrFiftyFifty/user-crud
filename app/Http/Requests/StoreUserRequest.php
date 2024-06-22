@@ -2,22 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class StoreUserRequest extends FormRequest
+class StoreUserRequest extends BaseUserRequest
 {
-    public function authorize()
-    {
-        return true;
-    }
-
-    public function rules()
-    {
-        return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'gender' => 'required|in:male,female',
-            'birthdate' => 'required|date',
-        ];
-    }
+    // Дополнительные правила или методы для создания пользователя можно добавить здесь
 }
