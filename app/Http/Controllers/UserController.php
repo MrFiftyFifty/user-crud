@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -32,7 +32,6 @@ class UserController extends Controller
     /**
      * Store a newly created user in storage.
      *
-     * @param  \App\Http\Requests\StoreUserRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreUserRequest $request)
@@ -45,7 +44,6 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified user.
      *
-     * @param  \App\Models\User  $user
      * @return \Inertia\Response
      */
     public function edit(User $user)
@@ -56,8 +54,6 @@ class UserController extends Controller
     /**
      * Update the specified user in storage.
      *
-     * @param  \App\Http\Requests\UpdateUserRequest  $request
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateUserRequest $request, User $user)
@@ -70,7 +66,6 @@ class UserController extends Controller
     /**
      * Remove the specified user from storage.
      *
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(User $user)

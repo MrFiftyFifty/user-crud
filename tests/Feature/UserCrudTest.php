@@ -12,8 +12,10 @@ class UserCrudTest extends TestCase
 
     /**
      * Test that a user can be created.
+     *
+     * @test
      */
-    public function test_it_can_create_a_user()
+    public function it_can_create_a_user()
     {
         $userData = [
             'name' => 'John Doe',
@@ -30,8 +32,10 @@ class UserCrudTest extends TestCase
 
     /**
      * Test that users can be read.
+     *
+     * @test
      */
-    public function test_it_can_read_users()
+    public function it_can_read_users()
     {
         $user = User::factory()->create();
 
@@ -43,8 +47,10 @@ class UserCrudTest extends TestCase
 
     /**
      * Test that a user can be updated.
+     *
+     * @test
      */
-    public function test_it_can_update_a_user()
+    public function it_can_update_a_user()
     {
         $user = User::factory()->create();
 
@@ -63,8 +69,10 @@ class UserCrudTest extends TestCase
 
     /**
      * Test that a user can be deleted.
+     *
+     * @test
      */
-    public function test_it_can_delete_a_user()
+    public function it_can_delete_a_user()
     {
         $user = User::factory()->create();
 

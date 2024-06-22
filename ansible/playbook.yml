@@ -46,6 +46,11 @@
         src: /home/mrfiftyfifty/user-crud/.env.example
         dest: /home/mrfiftyfifty/user-crud/.env
 
+    - name: Create database directory
+      file:
+        path: /home/mrfiftyfifty/user-crud/database
+        state: directory
+
     - name: Add database path to .env
       lineinfile:
         path: /home/mrfiftyfifty/user-crud/.env

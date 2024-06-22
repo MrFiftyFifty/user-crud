@@ -11,8 +11,10 @@ class ExampleTest extends TestCase
 
     /**
      * Проверяет, что приложение возвращает успешный ответ.
+     *
+     * @test
      */
-    public function test_application_returns_successful_response(): void
+    public function application_returns_successful_response(): void
     {
         $response = $this->get('/users');
 
