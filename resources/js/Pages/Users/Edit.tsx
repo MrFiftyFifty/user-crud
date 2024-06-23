@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
+import React from "react";
+import { useForm } from "@inertiajs/inertia-react";
 import { Form, Button, Container } from "react-bootstrap";
 
 interface User {
@@ -15,14 +15,16 @@ interface EditProps {
 }
 
 const Edit: React.FC<EditProps> = ({ user }) => {
-    const [name, setName] = useState<string>(user.name);
-    const [email, setEmail] = useState<string>(user.email);
-    const [gender, setGender] = useState<string>(user.gender === "Мужской" ? "male" : "female");
-    const [birthdate, setBirthdate] = useState<string>(user.birthdate);
+    const { data, setData, put, processing, errors } = useForm({
+        name: user.name,
+        email: user.email,
+        gender: user.gender === "Мужской" ? "male" : "female",
+        birthdate: user.birthdate,
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        Inertia.put(`/users/${user.id}`, { name, email, gender, birthdate });
+        put(`/users/${user.id}`);
     };
 
     return (
@@ -33,43 +35,47 @@ const Edit: React.FC<EditProps> = ({ user }) => {
                     <Form.Label>Имя</Form.Label>
                     <Form.Control
                         type="text"
-                        value={name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                        value={data.name}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData("name", e.target.value)}
                         placeholder="Имя"
                         required
                     />
+                    {errors.name && <div className="text-danger">{errors.name}</div>}
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
                         type="email"
-                        value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                        value={data.email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData("email", e.target.value)}
                         placeholder="Email"
                         required
                     />
+                    {errors.email && <div className="text-danger">{errors.email}</div>}
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Пол</Form.Label>
                     <Form.Select
-                        value={gender}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
+                        value={data.gender}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setData("gender", e.target.value)}
                         required
                     >
                         <option value="male">Мужской</option>
                         <option value="female">Женский</option>
                     </Form.Select>
+                    {errors.gender && <div className="text-danger">{errors.gender}</div>}
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Дата рождения</Form.Label>
                     <Form.Control
                         type="date"
-                        value={birthdate}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
+                        value={data.birthdate}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData("birthdate", e.target.value)}
                         required
                     />
+                    {errors.birthdate && <div className="text-danger">{errors.birthdate}</div>}
                 </Form.Group>
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" disabled={processing}>
                     Сохранить
                 </Button>
             </Form>

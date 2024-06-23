@@ -54,6 +54,9 @@ jobs:
       - name: Run Pint with fix
         run: vendor/bin/pint
 
+      - name: Run Duster with fix
+        run: vendor/bin/duster fix
+
   test:
     runs-on: ubuntu-latest
 
