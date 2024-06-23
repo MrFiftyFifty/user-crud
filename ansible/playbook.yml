@@ -19,66 +19,45 @@
         - php8.3-xml
         - apache2
 
-    - name: Install nvm
-      shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
 
-    - name: Source nvm
-      shell: . ~/.bashrc
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
 
-    - name: Install Node.js
-      shell: nvm install 18
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
 
-    - name: Use Node.js
-      shell: nvm use 18
+    - name: Clone the repository
+      git:
+        repo: "https://github.com/MrFiftyFifty/user-crud.git"
+        dest: /home/mrfiftyfifty/user-crud
+        version: main
 
-    - name: Install npm dependencies
-      shell: npm ci
-      args:
-        chdir: /home/mrfiftyfifty/user-crud
+    - name: Build the Docker image
+      command: docker build -t user-crud-app /home/mrfiftyfifty/user-crud
 
-    - name: Install Composer dependencies
-      composer:
-        command: install
-        working_dir: /home/mrfiftyfifty/user-crud
+    - name: Run the Docker container
+      docker_container:
+        name: user-crud-app
+        image: user-crud-app
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"
 
-    - name: Copy .env.example to .env
-      copy:
-        src: /home/mrfiftyfifty/user-crud/.env.example
-        dest: /home/mrfiftyfifty/user-crud/.env
-
-    - name: Create database directory
-      file:
-        path: /home/mrfiftyfifty/user-crud/database
-        state: directory
-
-    - name: Add database path to .env
-      lineinfile:
-        path: /home/mrfiftyfifty/user-crud/.env
-        regexp: "^DB_DATABASE="
-        line: "DB_DATABASE=database/database.sqlite"
-        create: yes
-
-    - name: Create SQLite database file
-      file:
-        path: /home/mrfiftyfifty/user-crud/database/database.sqlite
-        state: touch
-
-    - name: Generate application key
-      shell: php artisan key:generate
-      args:
-        chdir: /home/mrfiftyfifty/user-crud
-
-    - name: Run migrations
-      shell: php artisan migrate
-      args:
-        chdir: /home/mrfiftyfifty/user-crud
-
-    - name: Set permissions on project folder
-      file:
-        path: /home/mrfiftyfifty/user-crud
-        state: directory
-        mode: "0777"
-        recurse: yes
+    - name: Ensure Apache is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
 
     - name: Create Apache config
       copy:
@@ -97,10 +76,10 @@
           </VirtualHost>
 
     - name: Enable Apache site
-      shell: a2ensite hexletJob
+      command: a2ensite hexletJob
 
     - name: Enable Apache rewrite module
-      shell: a2enmod rewrite
+      command: a2enmod rewrite
 
     - name: Restart Apache
       service:

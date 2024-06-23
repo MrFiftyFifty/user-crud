@@ -11,23 +11,30 @@ RUN apt-get update && apt-get install -y \
 
 # Устанавливаем Node.js через nvm
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
-    && . ~/.nvm/nvm.sh \
+    && export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
     && nvm install 18 \
-    && nvm use 18
+    && nvm use 18 \
+    && nvm alias default 18 \
+    && npm install -g npm
 
 # Устанавливаем Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Копируем файлы проекта в контейнер
-COPY . /var/www/html
+COPY . /home/mrfiftyfifty/user-crud
 
 # Устанавливаем права на папку проекта
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 777 /var/www/html
+RUN chown -R www-data:www-data /home/mrfiftyfifty/user-crud \
+    && chmod -R 777 /home/mrfiftyfifty/user-crud
+
+# Устанавливаем рабочую директорию
+WORKDIR /home/mrfiftyfifty/user-crud
 
 # Устанавливаем зависимости проекта
-WORKDIR /var/www/html
-RUN npm ci \
+RUN export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && npm ci \
     && composer install \
     && npm install
 
@@ -44,8 +51,8 @@ RUN php artisan migrate
 # Настраиваем Apache
 RUN echo '<VirtualHost *:80>\n\
     ServerName 158.160.150.83\n\
-    DocumentRoot /var/www/html/public\n\
-    <Directory /var/www/html/public>\n\
+    DocumentRoot /home/mrfiftyfifty/user-crud/public\n\
+    <Directory /home/mrfiftyfifty/user-crud/public>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
     Require all granted\n\
@@ -55,7 +62,7 @@ RUN echo '<VirtualHost *:80>\n\
     </VirtualHost>' > /etc/apache2/sites-available/hexletJob.conf \
     && a2ensite hexletJob \
     && a2enmod rewrite \
-    && systemctl restart apache2
+    && service apache2 restart
 
 EXPOSE 80
 CMD ["apache2-foreground"]
