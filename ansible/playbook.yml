@@ -2,6 +2,7 @@
 - name: Deploy Laravel application to Yandex Cloud
   hosts: 158.160.150.83
   become: yes
+  remote_user: ty9991peterson
   tasks:
     - name: Update apt cache
       apt:
@@ -38,11 +39,11 @@
     - name: Clone the repository
       git:
         repo: "https://github.com/MrFiftyFifty/user-crud.git"
-        dest: /home/mrfiftyfifty/user-crud
+        dest: /home/ty9991peterson/user-crud
         version: main
 
     - name: Build the Docker image
-      command: docker build -t user-crud-app /home/mrfiftyfifty/user-crud
+      command: docker build -t user-crud-app /home/ty9991peterson/user-crud
 
     - name: Run the Docker container
       docker_container:
@@ -65,8 +66,8 @@
         content: |
           <VirtualHost *:80>
               ServerName 158.160.150.83
-              DocumentRoot /home/mrfiftyfifty/user-crud/public
-              <Directory /home/mrfiftyfifty/user-crud/public>
+              DocumentRoot /home/ty9991peterson/user-crud/public
+              <Directory /home/ty9991peterson/user-crud/public>
                   Options Indexes FollowSymLinks
                   AllowOverride All
                   Require all granted
