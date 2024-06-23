@@ -44,8 +44,8 @@ RUN export NVM_DIR="$HOME/.nvm" \
 # Копируем .env.example в .env и генерируем ключ приложения
 RUN cp .env.example .env \
     && mkdir -p database \
-    && echo 'DB_DATABASE=database/database.sqlite' >> .env \
-    && touch database/database.sqlite \
+    && echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env \
+    && touch /home/mrfiftyfifty/user-crud/database/database.sqlite \
     && php artisan key:generate
 
 # Выполняем миграции
