@@ -4,10 +4,18 @@
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-import axios from 'axios';
+import axios from "axios";
+
+// Declare the global `window` object to include `axios`
+declare global {
+    interface Window {
+        axios: typeof axios;
+    }
+}
+
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -18,6 +26,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // import Echo from 'laravel-echo';
 
 // import Pusher from 'pusher-js';
+
+// Declare the global `window` object to include `Pusher` and `Echo` if you uncomment the code
+// declare global {
+//     interface Window {
+//         Pusher: typeof Pusher;
+//         Echo: typeof Echo;
+//     }
+// }
+
 // window.Pusher = Pusher;
 
 // window.Echo = new Echo({

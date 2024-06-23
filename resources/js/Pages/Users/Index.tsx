@@ -3,8 +3,20 @@ import { Inertia } from "@inertiajs/inertia";
 import { InertiaLink } from "@inertiajs/inertia-react";
 import { Button, Table, Container } from "react-bootstrap";
 
-const Index = ({ users }) => {
-    const handleDelete = (id) => {
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    gender: string;
+    birthdate: string;
+}
+
+interface IndexProps {
+    users: User[];
+}
+
+const Index: React.FC<IndexProps> = ({ users }) => {
+    const handleDelete = (id: number) => {
         Inertia.delete(`/users/${id}`);
     };
 

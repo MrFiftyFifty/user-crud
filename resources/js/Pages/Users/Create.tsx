@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Form, Button, Container } from "react-bootstrap";
 
-const Create = () => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [gender, setGender] = useState("");
-    const [birthdate, setBirthdate] = useState("");
+const Create: React.FC = () => {
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [gender, setGender] = useState<string>("");
+    const [birthdate, setBirthdate] = useState<string>("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         Inertia.post("/users", { name, email, gender, birthdate });
     };

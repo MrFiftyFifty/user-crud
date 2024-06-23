@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Form, Button, Container } from "react-bootstrap";
 
-const Edit = ({ user }) => {
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    gender: string;
+    birthdate: string;
+}
+
+interface EditProps {
+    user: User;
+}
+
+const Edit: React.FC<EditProps> = ({ user }) => {
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [gender, setGender] = useState(
@@ -10,7 +22,7 @@ const Edit = ({ user }) => {
     );
     const [birthdate, setBirthdate] = useState(user.birthdate);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         Inertia.put(`/users/${user.id}`, { name, email, gender, birthdate });
     };
