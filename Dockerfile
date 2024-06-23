@@ -51,6 +51,9 @@ RUN cp .env.example .env \
 # Выполняем миграции
 RUN php artisan migrate
 
+# Сборка Vite
+RUN npm run build
+
 # Настраиваем Apache
 RUN echo '<VirtualHost *:80>\n\
     ServerName 158.160.150.83\n\
