@@ -59,17 +59,19 @@
         ports:
           - "80:80"
 
-    - name: Ensure Apache is running
-      service:
-        name: apache2
-        state: started
-        enabled: yes
+    - name: Ensure Apache is running on port 8080
+      copy:
+        dest: /etc/apache2/ports.conf
+        content: |
+          Listen 8080
+      notify:
+        - Restart Apache
 
     - name: Create Apache config
       copy:
         dest: /etc/apache2/sites-available/hexletJob.conf
         content: |
-          <VirtualHost *:80>
+          <VirtualHost *:8080>
               ServerName 158.160.150.83
               DocumentRoot /home/ty9991peterson/user-crud/public
               <Directory /home/ty9991peterson/user-crud/public>
@@ -80,13 +82,20 @@
               ErrorLog ${APACHE_LOG_DIR}/error.log
               CustomLog ${APACHE_LOG_DIR}/access.log combined
           </VirtualHost>
+      notify:
+        - Restart Apache
 
     - name: Enable Apache site
       command: a2ensite hexletJob
+      notify:
+        - Restart Apache
 
     - name: Enable Apache rewrite module
       command: a2enmod rewrite
+      notify:
+        - Restart Apache
 
+  handlers:
     - name: Restart Apache
       service:
         name: apache2
