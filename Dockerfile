@@ -46,6 +46,8 @@ RUN cp .env.example .env \
     && mkdir -p database \
     && echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env \
     && touch /home/mrfiftyfifty/user-crud/database/database.sqlite \
+    && chown -R www-data:www-data /home/mrfiftyfifty/user-crud/database \
+    && chmod -R 777 /home/mrfiftyfifty/user-crud/database \
     && php artisan key:generate
 
 # Выполняем миграции
