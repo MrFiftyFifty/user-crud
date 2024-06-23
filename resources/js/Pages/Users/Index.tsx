@@ -1,7 +1,6 @@
 import React from "react";
 import { Inertia } from "@inertiajs/inertia";
-import { InertiaLink } from "@inertiajs/inertia-react";
-import { Button, Table, Container } from "react-bootstrap";
+import { Table, Container, Button } from "react-bootstrap";
 
 interface User {
     id: number;
@@ -22,15 +21,14 @@ const Index: React.FC<IndexProps> = ({ users }) => {
 
     return (
         <Container>
-            <h1 className="my-4">Пользователи</h1>
-            <InertiaLink href="/users/create">
-                <Button variant="primary" className="mb-3">
-                    Создать пользователя
-                </Button>
-            </InertiaLink>
+            <h1 className="my-4">Список пользователей</h1>
+            <Button variant="primary" href="/users/create" className="mb-3">
+                Создать пользователя
+            </Button>
             <Table striped bordered hover>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Имя</th>
                         <th>Email</th>
                         <th>Пол</th>
@@ -39,20 +37,21 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map((user) => (
+                    {users.map((user, index) => (
                         <tr key={user.id}>
+                            <td>{index + 1}</td>
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>{user.gender}</td>
+                            <td>{new Date(user.birthdate).toLocaleDateString()}</td>
                             <td>
-                                {new Date(user.birthdate).toLocaleDateString()}
-                            </td>
-                            <td>
-                                <InertiaLink href={`/users/${user.id}/edit`}>
-                                    <Button variant="warning" className="me-2">
-                                        Редактировать
-                                    </Button>
-                                </InertiaLink>
+                                <Button
+                                    variant="warning"
+                                    href={`/users/${user.id}/edit`}
+                                    className="me-2"
+                                >
+                                    Редактировать
+                                </Button>
                                 <Button
                                     variant="danger"
                                     onClick={() => handleDelete(user.id)}

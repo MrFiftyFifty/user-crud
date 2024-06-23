@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Form, Button, Container } from "react-bootstrap";
 
@@ -8,7 +8,7 @@ const Create: React.FC = () => {
     const [gender, setGender] = useState<string>("");
     const [birthdate, setBirthdate] = useState<string>("");
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         Inertia.post("/users", { name, email, gender, birthdate });
     };
@@ -22,7 +22,7 @@ const Create: React.FC = () => {
                     <Form.Control
                         type="text"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                         placeholder="Имя"
                         required
                     />
@@ -32,7 +32,7 @@ const Create: React.FC = () => {
                     <Form.Control
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                         placeholder="Email"
                         required
                     />
@@ -41,7 +41,7 @@ const Create: React.FC = () => {
                     <Form.Label>Пол</Form.Label>
                     <Form.Select
                         value={gender}
-                        onChange={(e) => setGender(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
                         required
                     >
                         <option value="">Выберите пол</option>
@@ -54,7 +54,7 @@ const Create: React.FC = () => {
                     <Form.Control
                         type="date"
                         value={birthdate}
-                        onChange={(e) => setBirthdate(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
                         required
                     />
                 </Form.Group>

@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Form, Button, Container } from "react-bootstrap";
 
@@ -15,14 +15,12 @@ interface EditProps {
 }
 
 const Edit: React.FC<EditProps> = ({ user }) => {
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState(user.email);
-    const [gender, setGender] = useState(
-        user.gender === "Мужской" ? "male" : "female"
-    );
-    const [birthdate, setBirthdate] = useState(user.birthdate);
+    const [name, setName] = useState<string>(user.name);
+    const [email, setEmail] = useState<string>(user.email);
+    const [gender, setGender] = useState<string>(user.gender === "Мужской" ? "male" : "female");
+    const [birthdate, setBirthdate] = useState<string>(user.birthdate);
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         Inertia.put(`/users/${user.id}`, { name, email, gender, birthdate });
     };
@@ -36,7 +34,7 @@ const Edit: React.FC<EditProps> = ({ user }) => {
                     <Form.Control
                         type="text"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                         placeholder="Имя"
                         required
                     />
@@ -46,7 +44,7 @@ const Edit: React.FC<EditProps> = ({ user }) => {
                     <Form.Control
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                         placeholder="Email"
                         required
                     />
@@ -55,10 +53,9 @@ const Edit: React.FC<EditProps> = ({ user }) => {
                     <Form.Label>Пол</Form.Label>
                     <Form.Select
                         value={gender}
-                        onChange={(e) => setGender(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
                         required
                     >
-                        <option value="">Выберите пол</option>
                         <option value="male">Мужской</option>
                         <option value="female">Женский</option>
                     </Form.Select>
@@ -68,12 +65,12 @@ const Edit: React.FC<EditProps> = ({ user }) => {
                     <Form.Control
                         type="date"
                         value={birthdate}
-                        onChange={(e) => setBirthdate(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBirthdate(e.target.value)}
                         required
                     />
                 </Form.Group>
                 <Button variant="primary" type="submit">
-                    Обновить
+                    Сохранить
                 </Button>
             </Form>
         </Container>
