@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
     sqlite3 \
     libsqlite3-dev \
     libxml2-dev \
+    git \
+    zip \
+    unzip \
     && docker-php-ext-install pdo_sqlite
 
 # Устанавливаем Node.js через nvm
