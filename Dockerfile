@@ -52,7 +52,9 @@ RUN cp .env.example .env \
 RUN php artisan migrate
 
 # Сборка Vite
-RUN npm run build
+RUN export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && npm run build
 
 # Настраиваем Apache
 RUN echo '<VirtualHost *:80>\n\
