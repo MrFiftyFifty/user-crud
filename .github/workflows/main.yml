@@ -120,8 +120,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.YOUR_PRIVATE_KEY }}
+
       - name: Run Ansible Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "false"
         run: |
-          ansible-playbook ansible/playbook.yml -i "158.160.150.83," --private-key ${{ secrets.YOUR_PRIVATE_KEY }}
+          ansible-playbook ansible/playbook.yml -i "158.160.150.83,"
