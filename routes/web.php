@@ -19,3 +19,6 @@ Route::get('/', function () {
 });
 
 Route::resource('users', UserController::class);
+Route::get('deleted-users', [UserController::class, 'deleted'])->name('users.deleted');
+Route::post('users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
+Route::delete('users/{user}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');

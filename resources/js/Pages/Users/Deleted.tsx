@@ -11,23 +11,24 @@ interface User {
     deleted_at: string | null;
 }
 
-interface IndexProps {
+interface DeletedProps {
     users: User[];
 }
 
-const Index: React.FC<IndexProps> = ({ users }) => {
-    const handleDelete = (id: number) => {
-        Inertia.delete(`/users/${id}`);
+const Deleted: React.FC<DeletedProps> = ({ users }) => {
+    const handleRestore = (id: number) => {
+        Inertia.post(`/users/${id}/restore`);
+    };
+
+    const handleForceDelete = (id: number) => {
+        Inertia.delete(`/users/${id}/force-delete`);
     };
 
     return (
         <Container>
-            <h1 className="my-4">Список пользователей</h1>
-            <Button variant="primary" href="/users/create" className="mb-3">
-                Создать пользователя
-            </Button>
-            <Button variant="secondary" href="/deleted-users" className="mb-3 ms-2">
-                Показать удаленных пользователей
+            <h1 className="my-4">Удаленные пользователи</h1>
+            <Button variant="primary" href="/users" className="mb-3">
+                Вернуться к списку пользователей
             </Button>
             <Table striped bordered hover>
                 <thead>
@@ -50,17 +51,17 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                             <td>{new Date(user.birthdate).toLocaleDateString()}</td>
                             <td>
                                 <Button
-                                    variant="warning"
-                                    href={`/users/${user.id}/edit`}
+                                    variant="success"
+                                    onClick={() => handleRestore(user.id)}
                                     className="me-2"
                                 >
-                                    Редактировать
+                                    Восстановить
                                 </Button>
                                 <Button
                                     variant="danger"
-                                    onClick={() => handleDelete(user.id)}
+                                    onClick={() => handleForceDelete(user.id)}
                                 >
-                                    Удалить
+                                    Удалить навсегда
                                 </Button>
                             </td>
                         </tr>
@@ -71,4 +72,4 @@ const Index: React.FC<IndexProps> = ({ users }) => {
     );
 };
 
-export default Index;
+export default Deleted;

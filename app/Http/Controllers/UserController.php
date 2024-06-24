@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Users/Index', ['users' => User::get()]);
+        return Inertia::render('Users/Index', ['users' => User::whereNull('deleted_at')->get()]);
     }
 
     /**
@@ -83,5 +83,43 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index');
+    }
+
+    /**
+     * Display a listing of the deleted users.
+     *
+     * @return \Inertia\Response
+     */
+    public function deleted()
+    {
+        return Inertia::render('Users/Deleted', ['users' => User::onlyTrashed()->get()]);
+    }
+
+    /**
+     * Restore the specified user from soft deletes.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->route('users.deleted');
+    }
+
+    /**
+     * Permanently delete the specified user from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function forceDelete($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->forceDelete();
+
+        return redirect()->route('users.deleted');
     }
 }
