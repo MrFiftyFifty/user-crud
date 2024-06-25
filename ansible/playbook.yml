@@ -41,6 +41,12 @@
         name: apache2
         state: stopped
 
+    - name: Remove existing project directory
+      file:
+        path: /home/ty9991peterson/user-crud
+        state: absent
+        force: yes
+
     - name: Clone the repository
       git:
         repo: "https://github.com/MrFiftyFifty/user-crud.git"
