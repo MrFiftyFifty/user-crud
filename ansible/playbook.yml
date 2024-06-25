@@ -47,6 +47,10 @@
         dest: /home/ty9991peterson/user-crud
         version: main
 
+    - name: Wait for 10 seconds before building the Docker image
+      wait_for:
+        timeout: 10
+
     - name: Build the Docker image
       command: docker build -t user-crud-app /home/ty9991peterson/user-crud
 

@@ -10,6 +10,7 @@ interface User {
     birthdate: string;
     avatar: string | null;
     deleted_at: string | null;
+    state: string;
 }
 
 interface IndexProps {
@@ -21,14 +22,27 @@ const Index: React.FC<IndexProps> = ({ users }) => {
         Inertia.delete(`/users/${id}`);
     };
 
+    const handleRestore = (id: number) => {
+        Inertia.post(`/users/${id}/restore`);
+    };
+
+    const handleForceDelete = (id: number) => {
+        Inertia.delete(`/users/${id}/force-delete`);
+    };
+
+    const handleBan = (id: number) => {
+        Inertia.post(`/users/${id}/ban`);
+    };
+
+    const handleUnban = (id: number) => {
+        Inertia.post(`/users/${id}/unban`);
+    };
+
     return (
         <Container>
             <h1 className="my-4">Список пользователей</h1>
             <Button variant="primary" href="/users/create" className="mb-3">
                 Создать пользователя
-            </Button>
-            <Button variant="secondary" href="/deleted-users" className="mb-3 ms-2">
-                Показать удаленных пользователей
             </Button>
             <Table striped bordered hover>
                 <thead>
@@ -38,6 +52,7 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                         <th>Email</th>
                         <th>Пол</th>
                         <th>Дата рождения</th>
+                        <th>Состояние</th>
                         <th>Действия</th>
                     </tr>
                 </thead>
@@ -64,20 +79,57 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                             <td>{user.email}</td>
                             <td>{user.gender}</td>
                             <td>{new Date(user.birthdate).toLocaleDateString()}</td>
+                            <td>{user.state === 'App\\States\\Banned' ? 'Забанен' : 'Активен'}</td>
                             <td>
-                                <Button
-                                    variant="warning"
-                                    href={`/users/${user.id}/edit`}
-                                    className="me-2"
-                                >
-                                    Редактировать
-                                </Button>
-                                <Button
-                                    variant="danger"
-                                    onClick={() => handleDelete(user.id)}
-                                >
-                                    Удалить
-                                </Button>
+                                {user.deleted_at ? (
+                                    <>
+                                        <Button
+                                            variant="success"
+                                            onClick={() => handleRestore(user.id)}
+                                            className="me-2"
+                                        >
+                                            Восстановить
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => handleForceDelete(user.id)}
+                                        >
+                                            Удалить навсегда
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button
+                                            variant="warning"
+                                            href={`/users/${user.id}/edit`}
+                                            className="me-2"
+                                        >
+                                            Редактировать
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => handleDelete(user.id)}
+                                            className="me-2"
+                                        >
+                                            Удалить
+                                        </Button>
+                                        {user.state === 'App\\States\\Banned' ? (
+                                            <Button
+                                                variant="success"
+                                                onClick={() => handleUnban(user.id)}
+                                            >
+                                                Разбанить
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="danger"
+                                                onClick={() => handleBan(user.id)}
+                                            >
+                                                Забанить
+                                            </Button>
+                                        )}
+                                    </>
+                                )}
                             </td>
                         </tr>
                     ))}

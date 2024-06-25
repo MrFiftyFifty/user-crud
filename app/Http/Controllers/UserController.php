@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
+use App\States\Active;
+use App\States\Banned;
 
 class UserController extends Controller
 {
@@ -18,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Users/Index', ['users' => User::whereNull('deleted_at')->get()]);
+        return Inertia::render('Users/Index', ['users' => User::withTrashed()->get()]);
     }
 
     /**
@@ -96,7 +98,7 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified user from storage.
+     * Soft delete the specified user from storage.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
@@ -106,16 +108,6 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index');
-    }
-
-    /**
-     * Display a listing of the deleted users.
-     *
-     * @return \Inertia\Response
-     */
-    public function deleted()
-    {
-        return Inertia::render('Users/Deleted', ['users' => User::onlyTrashed()->get()]);
     }
 
     /**
@@ -129,7 +121,7 @@ class UserController extends Controller
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
 
-        return redirect()->route('users.deleted');
+        return redirect()->route('users.index');
     }
 
     /**
@@ -146,6 +138,34 @@ class UserController extends Controller
         }
         $user->forceDelete();
 
-        return redirect()->route('users.deleted');
+        return redirect()->route('users.index');
+    }
+
+    /**
+     * Ban the specified user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function ban($id)
+    {
+        $user = User::findOrFail($id);
+        $user->state->transitionTo(Banned::class);
+
+        return redirect()->route('users.index');
+    }
+
+    /**
+     * Unban the specified user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function unban($id)
+    {
+        $user = User::findOrFail($id);
+        $user->state->transitionTo(Active::class);
+
+        return redirect()->route('users.index');
     }
 }
