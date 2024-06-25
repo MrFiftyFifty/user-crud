@@ -99,6 +99,18 @@
       notify:
         - Restart Apache
 
+    - name: Set permissions on storage folder
+      file:
+        path: /home/ty9991peterson/user-crud/storage
+        state: directory
+        mode: "0777"
+        recurse: yes
+
+    - name: Create storage symbolic link
+      command: php artisan storage:link
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
   handlers:
     - name: Restart Apache
       service:

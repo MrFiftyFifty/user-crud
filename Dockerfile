@@ -50,6 +50,9 @@ RUN cp .env.example .env \
     && chmod -R 777 /home/mrfiftyfifty/user-crud/database \
     && php artisan key:generate
 
+# Создаем символическую ссылку для хранения
+RUN php artisan storage:link
+
 # Выполняем миграции
 RUN php artisan migrate
 
