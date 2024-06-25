@@ -8,6 +8,7 @@ interface User {
     email: string;
     gender: string;
     birthdate: string;
+    avatar: string | null;
     deleted_at: string | null;
 }
 
@@ -44,7 +45,22 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                     {users.map((user, index) => (
                         <tr key={user.id}>
                             <td>{index + 1}</td>
-                            <td>{user.name}</td>
+                            <td>
+                                {user.avatar && (
+                                    <img
+                                        src={`/storage/${user.avatar}`}
+                                        alt="Avatar"
+                                        style={{
+                                            width: '50px',
+                                            height: '50px',
+                                            marginRight: '10px',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover'
+                                        }}
+                                    />
+                                )}
+                                {user.name}
+                            </td>
                             <td>{user.email}</td>
                             <td>{user.gender}</td>
                             <td>{new Date(user.birthdate).toLocaleDateString()}</td>

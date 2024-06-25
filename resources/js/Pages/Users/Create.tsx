@@ -8,11 +8,21 @@ const Create: React.FC = () => {
         email: "",
         gender: "",
         birthdate: "",
+        avatar: null as File | null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post("/users");
+        const formData = new FormData();
+        Object.keys(data).forEach(key => {
+            formData.append(key, data[key as keyof typeof data] as string | Blob);
+        });
+        post("/users", {
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
     };
 
     return (
@@ -63,6 +73,14 @@ const Create: React.FC = () => {
                         required
                     />
                     {errors.birthdate && <div className="text-danger">{errors.birthdate}</div>}
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Аватар</Form.Label>
+                    <Form.Control
+                        type="file"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData("avatar", e.target.files ? e.target.files[0] : null)}
+                    />
+                    {errors.avatar && <div className="text-danger">{errors.avatar}</div>}
                 </Form.Group>
                 <Button variant="primary" type="submit" disabled={processing}>
                     Создать

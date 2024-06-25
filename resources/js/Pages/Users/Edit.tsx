@@ -8,6 +8,7 @@ interface User {
     email: string;
     gender: string;
     birthdate: string;
+    avatar: string | null;
 }
 
 interface EditProps {
@@ -15,16 +16,26 @@ interface EditProps {
 }
 
 const Edit: React.FC<EditProps> = ({ user }) => {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: user.name,
         email: user.email,
         gender: user.gender === "Мужской" ? "male" : "female",
         birthdate: user.birthdate,
+        avatar: null as File | null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(`/users/${user.id}`);
+        const formData = new FormData();
+        Object.keys(data).forEach(key => {
+            formData.append(key, data[key as keyof typeof data] as string | Blob);
+        });
+        post(`/users/${user.id}`, {
+            data: formData,
+            headers: {
+                'X-HTTP-Method-Override': 'PUT'
+            }
+        });
     };
 
     return (
@@ -74,6 +85,15 @@ const Edit: React.FC<EditProps> = ({ user }) => {
                         required
                     />
                     {errors.birthdate && <div className="text-danger">{errors.birthdate}</div>}
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Аватар</Form.Label>
+                    <Form.Control
+                        type="file"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData("avatar", e.target.files ? e.target.files[0] : null)}
+                    />
+                    {errors.avatar && <div className="text-danger">{errors.avatar}</div>}
+                    {user.avatar && <img src={`/storage/${user.avatar}`} alt="Avatar" style={{ width: '100px', marginTop: '10px' }} />}
                 </Form.Group>
                 <Button variant="primary" type="submit" disabled={processing}>
                     Сохранить
