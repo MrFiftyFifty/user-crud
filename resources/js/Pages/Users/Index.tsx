@@ -1,6 +1,7 @@
 import React from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Table, Container, Button } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 interface User {
     id: number;
@@ -18,6 +19,8 @@ interface IndexProps {
 }
 
 const Index: React.FC<IndexProps> = ({ users }) => {
+    const { t } = useTranslation();
+
     const handleDelete = (id: number) => {
         Inertia.delete(`/users/${id}`);
     };
@@ -40,20 +43,20 @@ const Index: React.FC<IndexProps> = ({ users }) => {
 
     return (
         <Container>
-            <h1 className="my-4">Список пользователей</h1>
+            <h1 className="my-4">{t('user_list')}</h1>
             <Button variant="primary" href="/users/create" className="mb-3">
-                Создать пользователя
+                {t('create_user')}
             </Button>
             <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Имя</th>
-                        <th>Email</th>
-                        <th>Пол</th>
-                        <th>Дата рождения</th>
-                        <th>Состояние</th>
-                        <th>Действия</th>
+                        <th>{t('name')}</th>
+                        <th>{t('email')}</th>
+                        <th>{t('gender')}</th>
+                        <th>{t('birthdate')}</th>
+                        <th>{t('state')}</th>
+                        <th>{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,7 +82,7 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                             <td>{user.email}</td>
                             <td>{user.gender}</td>
                             <td>{new Date(user.birthdate).toLocaleDateString()}</td>
-                            <td>{user.state === 'App\\States\\Banned' ? 'Забанен' : 'Активен'}</td>
+                            <td>{user.state === 'App\\States\\Banned' ? t('banned') : t('active')}</td>
                             <td>
                                 {user.deleted_at ? (
                                     <>
@@ -88,13 +91,13 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                                             onClick={() => handleRestore(user.id)}
                                             className="me-2"
                                         >
-                                            Восстановить
+                                            {t('restore_user')}
                                         </Button>
                                         <Button
                                             variant="danger"
                                             onClick={() => handleForceDelete(user.id)}
                                         >
-                                            Удалить навсегда
+                                            {t('delete_user_forever')}
                                         </Button>
                                     </>
                                 ) : (
@@ -104,28 +107,28 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                                             href={`/users/${user.id}/edit`}
                                             className="me-2"
                                         >
-                                            Редактировать
+                                            {t('edit_user')}
                                         </Button>
                                         <Button
                                             variant="danger"
                                             onClick={() => handleDelete(user.id)}
                                             className="me-2"
                                         >
-                                            Удалить
+                                            {t('delete_user')}
                                         </Button>
                                         {user.state === 'App\\States\\Banned' ? (
                                             <Button
                                                 variant="success"
                                                 onClick={() => handleUnban(user.id)}
                                             >
-                                                Разбанить
+                                                {t('unban_user')}
                                             </Button>
                                         ) : (
                                             <Button
                                                 variant="danger"
                                                 onClick={() => handleBan(user.id)}
                                             >
-                                                Забанить
+                                                {t('ban_user')}
                                             </Button>
                                         )}
                                     </>

@@ -10,6 +10,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use App\States\Active;
 use App\States\Banned;
+use Illuminate\Support\Facades\App;
 
 class UserController extends Controller
 {
@@ -49,7 +50,7 @@ class UserController extends Controller
 
         User::create($data);
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('message', __('messages.create_user'));
     }
 
     /**
@@ -94,7 +95,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('message', __('messages.edit_user'));
     }
 
     /**
@@ -107,7 +108,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('message', __('messages.delete_user'));
     }
 
     /**
@@ -121,7 +122,7 @@ class UserController extends Controller
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('message', __('messages.restore_user'));
     }
 
     /**
@@ -138,7 +139,7 @@ class UserController extends Controller
         }
         $user->forceDelete();
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('message', __('messages.delete_user'));
     }
 
     /**
@@ -152,7 +153,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->state->transitionTo(Banned::class);
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('message', __('messages.ban_user'));
     }
 
     /**
@@ -166,6 +167,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->state->transitionTo(Active::class);
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('message', __('messages.unban_user'));
     }
 }
