@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\States\UserState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\ModelStates\HasStates;
-use App\States\UserState;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasStates;
+    use HasApiTokens, HasFactory, HasStates, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
