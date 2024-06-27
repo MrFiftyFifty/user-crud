@@ -1,12 +1,6 @@
 name: CI/CD
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: push
 
 jobs:
   lint:
@@ -22,40 +16,16 @@ jobs:
           php-version: "8.3"
           extensions: mbstring, xml, sqlite3
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
           node-version: "18"
 
-      - name: Install npm dependencies
-        run: npm ci
+      - name: Install npm and composer dependencies
+        run: make install
 
-      - name: Create database directory
-        run: mkdir -p database
-
-      - name: Create SQLite database file
-        run: touch database/database.sqlite
-
-      - name: Copy .env.example to .env
-        run: cp .env.example .env
-
-      - name: Add database path to .env
-        run: echo 'DB_DATABASE=database/database.sqlite' >> .env
-
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Run migrations
-        run: php artisan migrate
-
-      - name: Run Pint with fix
-        run: vendor/bin/pint
-
-      - name: Run Duster with fix
-        run: vendor/bin/duster fix
+      - name: Run Duster
+        run: make lint
 
   test:
     runs-on: ubuntu-latest
@@ -70,22 +40,13 @@ jobs:
           php-version: "8.3"
           extensions: mbstring, xml, sqlite3
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
           node-version: "18"
 
-      - name: Install npm dependencies
-        run: npm ci
-
-      - name: Create database directory
-        run: mkdir -p database
-
-      - name: Create SQLite database file
-        run: touch database/database.sqlite
+      - name: Install npm and composer dependencies
+        run: make install
 
       - name: Copy .env.example to .env
         run: cp .env.example .env
@@ -99,15 +60,40 @@ jobs:
       - name: Run migrations
         run: php artisan migrate
 
-      - name: Build assets with Vite
-        run: npm run build
+      - name: Run build
+        run: make build
 
       - name: Run tests
-        run: php artisan test
+        run: make test
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/user-crud-app:latest
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [lint, test]
+    needs: build_and_push
 
     steps:
       - name: Checkout code
@@ -132,4 +118,4 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "false"
         run: |
-          ansible-playbook ansible/playbook.yml -i "158.160.150.83," -u ty9991peterson
+          ansible-playbook ansible/playbook.yml -i '158.160.150.83,' -u ty9991peterson

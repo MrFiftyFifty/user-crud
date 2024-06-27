@@ -16,6 +16,8 @@
     "dependencies": {
         "@inertiajs/inertia-react": "^0.8.1",
         "@inertiajs/react": "^1.2.0",
+        "@sentry/react": "^7.118.0",
+        "@sentry/tracing": "^7.114.0",
         "@vitejs/plugin-react": "^4.3.1",
         "bootstrap": "^5.3.3",
         "i18next": "^23.11.5",
