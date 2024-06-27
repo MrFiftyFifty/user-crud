@@ -22,7 +22,11 @@ const Index: React.FC<IndexProps> = ({ users }) => {
     const { t } = useTranslation();
 
     const handleDelete = (id: number) => {
-        Inertia.delete(`/users/${id}`);
+        Inertia.post(`/users/${id}`, {}, {
+            headers: {
+                'X-HTTP-Method-Override': 'DELETE'
+            }
+        });
     };
 
     const handleRestore = (id: number) => {
@@ -30,7 +34,11 @@ const Index: React.FC<IndexProps> = ({ users }) => {
     };
 
     const handleForceDelete = (id: number) => {
-        Inertia.delete(`/users/${id}/force-delete`);
+        Inertia.post(`/users/${id}/force-delete`, {}, {
+            headers: {
+                'X-HTTP-Method-Override': 'DELETE'
+            }
+        });
     };
 
     const handleBan = (id: number) => {

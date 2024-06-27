@@ -104,6 +104,34 @@ class UserController extends Controller
     }
 
     /**
+     * Ban the specified user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function ban($id)
+    {
+        $user = User::findOrFail($id);
+        $user->state->transitionTo(Banned::class);
+
+        return redirect()->route('users.index')->with('message', __('messages.ban_user'));
+    }
+
+    /**
+     * Unban the specified user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function unban($id)
+    {
+        $user = User::findOrFail($id);
+        $user->state->transitionTo(Active::class);
+
+        return redirect()->route('users.index')->with('message', __('messages.unban_user'));
+    }
+
+    /**
      * Restore the specified user from soft deletes.
      *
      * @param  int  $id
@@ -132,33 +160,5 @@ class UserController extends Controller
         $user->forceDelete();
 
         return redirect()->route('users.index')->with('message', __('messages.delete_user'));
-    }
-
-    /**
-     * Ban the specified user.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function ban($id)
-    {
-        $user = User::findOrFail($id);
-        $user->state->transitionTo(Banned::class);
-
-        return redirect()->route('users.index')->with('message', __('messages.ban_user'));
-    }
-
-    /**
-     * Unban the specified user.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function unban($id)
-    {
-        $user = User::findOrFail($id);
-        $user->state->transitionTo(Active::class);
-
-        return redirect()->route('users.index')->with('message', __('messages.unban_user'));
     }
 }

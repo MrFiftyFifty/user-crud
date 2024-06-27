@@ -49,14 +49,8 @@ class User extends Authenticatable
         'password' => 'hashed',
         'birthdate' => 'date:Y-m-d',
         'state' => UserState::class,
+        'deleted_at' => 'datetime',
     ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = ['deleted_at'];
 
     /**
      * Get the user's gender with the first letter capitalized.
