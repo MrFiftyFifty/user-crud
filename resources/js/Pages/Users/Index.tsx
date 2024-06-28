@@ -22,37 +22,29 @@ const Index: React.FC<IndexProps> = ({ users }) => {
     const { t } = useTranslation();
 
     const handleDelete = (id: number) => {
-        Inertia.post(`/users/${id}`, {}, {
-            headers: {
-                'X-HTTP-Method-Override': 'DELETE'
-            }
-        });
+        Inertia.delete(route('users.destroy', { id }));
     };
 
     const handleRestore = (id: number) => {
-        Inertia.post(`/users/${id}/restore`);
+        Inertia.post(route('users.restore', { id }));
     };
 
     const handleForceDelete = (id: number) => {
-        Inertia.post(`/users/${id}/force-delete`, {}, {
-            headers: {
-                'X-HTTP-Method-Override': 'DELETE'
-            }
-        });
+        Inertia.delete(route('users.forceDelete', { id }));
     };
 
     const handleBan = (id: number) => {
-        Inertia.post(`/users/${id}/ban`);
+        Inertia.post(route('users.ban', { id }));
     };
 
     const handleUnban = (id: number) => {
-        Inertia.post(`/users/${id}/unban`);
+        Inertia.post(route('users.unban', { id }));
     };
 
     return (
         <Container>
             <h1 className="my-4">{t('user_list')}</h1>
-            <Button variant="primary" href="/users/create" className="mb-3">
+            <Button variant="primary" href={route('users.create')} className="mb-3">
                 {t('create_user')}
             </Button>
             <Table striped bordered hover>
@@ -112,7 +104,7 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                                     <>
                                         <Button
                                             variant="warning"
-                                            href={`/users/${user.id}/edit`}
+                                            href={route('users.edit', { id: user.id })}
                                             className="me-2"
                                         >
                                             {t('edit_user')}

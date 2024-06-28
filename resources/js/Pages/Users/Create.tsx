@@ -19,7 +19,7 @@ const Create: React.FC = () => {
         Object.keys(data).forEach(key => {
             formData.append(key, data[key as keyof typeof data] as string | Blob);
         });
-        post("/users", {
+        post(route('users.store'), {
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',

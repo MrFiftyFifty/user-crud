@@ -32,7 +32,7 @@ const Edit: React.FC<EditProps> = ({ user }) => {
         Object.keys(data).forEach(key => {
             formData.append(key, data[key as keyof typeof data] as string | Blob);
         });
-        post(`/users/${user.id}`, {
+        post(route('users.update', { id: user.id }), {
             data: formData,
             headers: {
                 'X-HTTP-Method-Override': 'PUT'
