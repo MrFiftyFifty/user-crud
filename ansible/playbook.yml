@@ -48,6 +48,18 @@
         ports:
           - "80:80"
 
+    - name: Create storage symbolic link
+      command: php artisan storage:link
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Set permissions on storage folder
+      file:
+        path: /home/ty9991peterson/user-crud/storage
+        state: directory
+        mode: "0775"
+        recurse: yes
+
   handlers:
     - name: Restart Docker
       service:
