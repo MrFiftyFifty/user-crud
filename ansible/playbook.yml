@@ -2,6 +2,8 @@
 - name: Deploy Laravel application to Yandex Cloud
   hosts: 158.160.150.83
   become: yes
+  vars:
+    ansible_ssh_common_args: "-o ConnectionAttempts=5 -o ConnectTimeout=60"
   tasks:
     - name: Update apt cache
       apt:
@@ -33,29 +35,16 @@
         name: user-crud-app
         state: absent
 
-    - name: Remove existing project directory
-      file:
-        path: /home/ty9991peterson/user-crud
-        state: absent
-        force: yes
-
-    - name: Clone the repository
-      git:
-        repo: "https://github.com/MrFiftyFifty/user-crud.git"
-        dest: /home/ty9991peterson/user-crud
-        version: main
-
-    - name: Wait for 10 seconds before building the Docker image
-      wait_for:
-        timeout: 10
-
-    - name: Build the Docker image
-      command: docker build -t user-crud-app /home/ty9991peterson/user-crud
+    - name: Pull the latest Docker image
+      docker_image:
+        name: devdanilboe/user-crud-app
+        tag: latest
+        source: pull
 
     - name: Run the Docker container
       docker_container:
         name: user-crud-app
-        image: user-crud-app:latest
+        image: devdanilboe/user-crud-app:latest
         state: started
         restart_policy: always
         ports:

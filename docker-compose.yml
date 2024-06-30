@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-crud-app
+    working_dir: /home/mrfiftyfifty/user-crud
+    volumes:
+      - .:/home/mrfiftyfifty/user-crud
+    ports:
+      - "8000:80"
+    environment:
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:YOUR_APP_KEY_HERE
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: user-crud-db
+    environment:
+      POSTGRES_DB: user_crud
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-data:
