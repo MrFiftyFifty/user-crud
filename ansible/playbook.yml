@@ -57,13 +57,23 @@
           - "80:80"
 
     - name: Set ownership for project directory
-      command: sudo chown -R www-data:www-data /home/ty9991peterson/user-crud
+      command: chown -R www-data:www-data /home/ty9991peterson/user-crud
 
     - name: Set permissions for storage directory
-      command: sudo chmod -R 755 /home/ty9991peterson/user-crud/storage
+      command: chmod -R 755 /home/ty9991peterson/user-crud/storage
 
     - name: Set permissions for bootstrap/cache directory
-      command: sudo chmod -R 755 /home/ty9991peterson/user-crud/bootstrap/cache
+      command: chmod -R 755 /home/ty9991peterson/user-crud/bootstrap/cache
+
+    - name: Install Composer dependencies
+      command: composer install --prefer-dist --no-progress --no-interaction
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Install npm dependencies
+      command: npm ci
+      args:
+        chdir: /home/ty9991peterson/user-crud
 
   handlers:
     - name: Restart Docker
