@@ -25,10 +25,10 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | b
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy application files
-COPY . /home/mrfiftyfifty/user-crud
+COPY . /home/ty9991peterson/user-crud
 
 # Set working directory
-WORKDIR /home/mrfiftyfifty/user-crud
+WORKDIR /home/ty9991peterson/user-crud
 
 # Install application dependencies
 RUN export NVM_DIR="$HOME/.nvm" \
@@ -38,17 +38,18 @@ RUN export NVM_DIR="$HOME/.nvm" \
     && composer install
 
 # Set permissions
-RUN chown -R www-data:www-data /home/mrfiftyfifty/user-crud \
-    && chmod -R 755 /home/mrfiftyfifty/user-crud/storage \
-    && chmod -R 755 /home/mrfiftyfifty/user-crud/bootstrap/cache
+RUN chown -R www-data:www-data /home/ty9991peterson/user-crud \
+    && chmod -R 755 /home/ty9991peterson/user-crud/storage \
+    && chmod -R 755 /home/ty9991peterson/user-crud/bootstrap/cache \
+    && chmod -R 755 /home/ty9991peterson/user-crud/vendor
 
 # Set up environment and generate application key
 RUN cp .env.example .env \
     && mkdir -p database \
-    && echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env \
-    && touch /home/mrfiftyfifty/user-crud/database/database.sqlite \
-    && chown -R www-data:www-data /home/mrfiftyfifty/user-crud/database \
-    && chmod -R 755 /home/mrfiftyfifty/user-crud/database \
+    && echo 'DB_DATABASE=/home/ty9991peterson/user-crud/database/database.sqlite' >> .env \
+    && touch /home/ty9991peterson/user-crud/database/database.sqlite \
+    && chown -R www-data:www-data /home/ty9991peterson/user-crud/database \
+    && chmod -R 755 /home/ty9991peterson/user-crud/database \
     && php artisan key:generate
 
 # Create storage symbolic link
@@ -65,8 +66,8 @@ RUN export NVM_DIR="$HOME/.nvm" \
 # Configure Apache
 RUN echo '<VirtualHost *:80>\n\
     ServerName 158.160.150.83\n\
-    DocumentRoot /home/mrfiftyfifty/user-crud/public\n\
-    <Directory /home/mrfiftyfifty/user-crud/public>\n\
+    DocumentRoot /home/ty9991peterson/user-crud/public\n\
+    <Directory /home/ty9991peterson/user-crud/public>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
     Require all granted\n\
