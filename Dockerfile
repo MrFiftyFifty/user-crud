@@ -30,6 +30,9 @@ COPY . /home/mrfiftyfifty/user-crud
 # Set working directory
 WORKDIR /home/mrfiftyfifty/user-crud
 
+# Add Git safe directory
+RUN git config --global --add safe.directory /home/mrfiftyfifty/user-crud
+
 # Install application dependencies
 RUN export NVM_DIR="$HOME/.nvm" \
     && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
