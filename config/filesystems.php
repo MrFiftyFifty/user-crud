@@ -20,9 +20,9 @@ return [
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
-    | Here you may configure as many filesystem "disks" as you wish, and you
-    | may even configure multiple disks of the same driver. Defaults have
-    | been set up for each driver as an example of the required values.
+    | Here are each of the filesystem disks setup for your application.
+    | Of course, examples of configuring each filesystem platform that is
+    | supported by Laravel is shown below to make development simple.
     |
     | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
