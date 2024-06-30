@@ -24,6 +24,12 @@ jobs:
       - name: Install npm and composer dependencies
         run: make install
 
+      - name: Set permissions
+        run: sudo chmod -R 775 storage
+
+      - name: Generate application key
+        run: php artisan key:generate
+
       - name: Run Duster
         run: make lint
 
@@ -47,6 +53,9 @@ jobs:
 
       - name: Install npm and composer dependencies
         run: make install
+
+      - name: Set permissions
+        run: sudo chmod -R 775 storage
 
       - name: Copy .env.example to .env
         run: cp .env.example .env

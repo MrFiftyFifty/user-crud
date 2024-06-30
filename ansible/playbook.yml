@@ -33,32 +33,33 @@
         name: user-crud-app
         state: absent
 
-    - name: Pull the latest Docker image
-      docker_image:
-        name: devdanilboe/user-crud-app
-        tag: latest
-        source: pull
+    - name: Remove existing project directory
+      file:
+        path: /home/ty9991peterson/user-crud
+        state: absent
+        force: yes
+
+    - name: Clone the repository
+      git:
+        repo: "https://github.com/MrFiftyFifty/user-crud.git"
+        dest: /home/ty9991peterson/user-crud
+        version: main
+
+    - name: Wait for 10 seconds before building the Docker image
+      wait_for:
+        timeout: 10
+
+    - name: Build the Docker image
+      command: docker build -t user-crud-app /home/ty9991peterson/user-crud
 
     - name: Run the Docker container
       docker_container:
         name: user-crud-app
-        image: devdanilboe/user-crud-app:latest
+        image: user-crud-app:latest
         state: started
         restart_policy: always
         ports:
           - "80:80"
-
-    - name: Create storage symbolic link
-      command: php artisan storage:link
-      args:
-        chdir: /home/ty9991peterson/user-crud
-
-    - name: Set permissions on storage folder
-      file:
-        path: /home/ty9991peterson/user-crud/storage
-        state: directory
-        mode: "0775"
-        recurse: yes
 
   handlers:
     - name: Restart Docker
