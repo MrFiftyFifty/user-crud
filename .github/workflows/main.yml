@@ -54,9 +54,6 @@ jobs:
       - name: Add database path to .env
         run: echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env
 
-      - name: Create SQLite database file
-        run: touch /home/mrfiftyfifty/user-crud/database/database.sqlite
-
       - name: Generate application key
         run: php artisan key:generate
 
