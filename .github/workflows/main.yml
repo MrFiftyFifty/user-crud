@@ -55,7 +55,7 @@ jobs:
           node-version: "18"
 
       - name: Install npm and composer dependencies
-        run: make installr
+        run: make install
 
       - name: Copy .env.example to .env
         run: cp .env.example .env
