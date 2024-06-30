@@ -61,13 +61,10 @@ jobs:
         run: cp .env.example .env
 
       - name: Add database path to .env
-        run: echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env
+        run: echo 'DB_DATABASE=database/database.sqlite' >> .env
 
       - name: Generate application key
         run: php artisan key:generate
-
-      - name: Create SQLite database file
-        run: touch database/database.sqlite
 
       - name: Create storage symbolic link
         run: php artisan storage:link
