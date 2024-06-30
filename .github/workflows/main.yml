@@ -24,20 +24,8 @@ jobs:
       - name: Install npm and composer dependencies
         run: make install
 
-      - name: Set permissions
-        run: sudo chmod -R 755 storage bootstrap/cache vendor
-
-      - name: Copy .env.example to .env
-        run: cp .env.example .env
-
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Create storage symbolic link
-        run: php artisan storage:link
-
       - name: Run Duster
-        run: make lint
+        run: vendor/bin/duster lint
 
   test:
     runs-on: ubuntu-latest
@@ -60,20 +48,14 @@ jobs:
       - name: Install npm and composer dependencies
         run: make install
 
-      - name: Set permissions
-        run: sudo chmod -R 755 storage bootstrap/cache vendor
-
       - name: Copy .env.example to .env
         run: cp .env.example .env
 
       - name: Add database path to .env
-        run: echo 'DB_DATABASE=database/database.sqlite' >> .env
+        run: echo 'DB_DATABASE=/home/ty9991peterson/user-crud/database/database.sqlite' >> .env
 
       - name: Generate application key
         run: php artisan key:generate
-
-      - name: Create storage symbolic link
-        run: php artisan storage:link
 
       - name: Run migrations
         run: php artisan migrate
