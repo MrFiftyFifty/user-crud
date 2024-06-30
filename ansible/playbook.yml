@@ -59,6 +59,9 @@
     - name: Set ownership for project directory
       command: chown -R www-data:www-data /home/ty9991peterson/user-crud
 
+    - name: Set permissions for project directory
+      command: sudo chmod -R 777 /home/ty9991peterson/user-crud
+
     - name: Set permissions for storage directory
       command: chmod -R 755 /home/ty9991peterson/user-crud/storage
 
@@ -85,6 +88,11 @@
 
     - name: Install npm dependencies
       command: npm ci
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Create storage symbolic link
+      command: php artisan storage:link
       args:
         chdir: /home/ty9991peterson/user-crud
 
