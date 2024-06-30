@@ -30,9 +30,6 @@ COPY . /home/mrfiftyfifty/user-crud
 # Set working directory
 WORKDIR /home/mrfiftyfifty/user-crud
 
-# Add Git safe directory
-RUN git config --global --add safe.directory /home/mrfiftyfifty/user-crud
-
 # Install application dependencies
 RUN export NVM_DIR="$HOME/.nvm" \
     && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
@@ -42,7 +39,8 @@ RUN export NVM_DIR="$HOME/.nvm" \
 
 # Set permissions
 RUN chown -R www-data:www-data /home/mrfiftyfifty/user-crud \
-    && chmod -R 775 /home/mrfiftyfifty/user-crud
+    && chmod -R 755 /home/mrfiftyfifty/user-crud/storage \
+    && chmod -R 755 /home/mrfiftyfifty/user-crud/bootstrap/cache
 
 # Set up environment and generate application key
 RUN cp .env.example .env \
@@ -50,7 +48,7 @@ RUN cp .env.example .env \
     && echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env \
     && touch /home/mrfiftyfifty/user-crud/database/database.sqlite \
     && chown -R www-data:www-data /home/mrfiftyfifty/user-crud/database \
-    && chmod -R 775 /home/mrfiftyfifty/user-crud/database \
+    && chmod -R 755 /home/mrfiftyfifty/user-crud/database \
     && php artisan key:generate
 
 # Create storage symbolic link
