@@ -38,8 +38,8 @@ RUN export NVM_DIR="$HOME/.nvm" \
     && composer install
 
 # Set permissions
-RUN sudo chown -R www-data:www-data /home/ty9991peterson/user-crud \
-    && sudo chmod -R 777 /home/ty9991peterson/user-crud
+RUN chown -R www-data:www-data /home/ty9991peterson/user-crud \
+    && chmod -R 777 /home/ty9991peterson/user-crud
 
 # Set up environment and generate application key
 RUN cp .env.example .env \
