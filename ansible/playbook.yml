@@ -2,6 +2,8 @@
 - name: Deploy Laravel application to Yandex Cloud
   hosts: 158.160.150.83
   become: yes
+  vars:
+    ansible_ssh_common_args: "-o ConnectionAttempts=5 -o ConnectTimeout=60"
   tasks:
     - name: Update apt cache
       apt:
@@ -22,22 +24,28 @@
         state: started
         enabled: yes
 
-    - name: Pull the latest Docker image
-      docker_image:
-        name: devdanilboe/user-crud-app
-        tag: latest
-        source: pull
+    - name: Check if Docker container exists
+      shell: docker ps -a --filter "name=user-crud-app" --format "{{'{{'}}.Names{{'}}'}}"
+      register: container_exists
 
     - name: Stop existing Docker container
       docker_container:
         name: user-crud-app
         state: stopped
         force_kill: yes
+      when: container_exists.stdout != ""
 
     - name: Remove existing Docker container
       docker_container:
         name: user-crud-app
         state: absent
+      when: container_exists.stdout != ""
+
+    - name: Pull the latest Docker image
+      docker_image:
+        name: devdanilboe/user-crud-app
+        tag: latest
+        source: pull
 
     - name: Run the Docker container
       docker_container:
@@ -48,6 +56,37 @@
         ports:
           - "80:80"
 
+    - name: Copy .env.example to .env
+      command: cp .env.example .env
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Generate application key
+      command: php artisan key:generate
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Create SQLite database file
+      file:
+        path: /home/ty9991peterson/user-crud/database/database.sqlite
+        state: touch
+
+    - name: Create storage symbolic link
+      command: php artisan storage:link
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Install Composer dependencies
+      command: composer install --prefer-dist --no-progress --no-interaction
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Install npm dependencies
+      command: npm ci
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+  handlers:
     - name: Restart Docker
       service:
         name: docker

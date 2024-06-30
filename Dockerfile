@@ -39,7 +39,9 @@ RUN export NVM_DIR="$HOME/.nvm" \
 
 # Set permissions
 RUN chown -R www-data:www-data /home/ty9991peterson/user-crud \
-    && chmod -R 777 /home/ty9991peterson/user-crud
+    && chmod -R 755 /home/ty9991peterson/user-crud/storage \
+    && chmod -R 755 /home/ty9991peterson/user-crud/bootstrap/cache \
+    && chmod -R 755 /home/ty9991peterson/user-crud/vendor
 
 # Set up environment and generate application key
 RUN cp .env.example .env \
@@ -47,7 +49,7 @@ RUN cp .env.example .env \
     && touch /home/ty9991peterson/user-crud/database/database.sqlite \
     && echo 'DB_DATABASE=/home/ty9991peterson/user-crud/database/database.sqlite' >> .env \
     && chown -R www-data:www-data /home/ty9991peterson/user-crud/database \
-    && chmod -R 777 /home/ty9991peterson/user-crud/database \
+    && chmod -R 755 /home/ty9991peterson/user-crud/database \
     && php artisan key:generate
 
 # Create storage symbolic link
