@@ -1,57 +1,133 @@
----
-- name: Deploy Laravel application to Yandex Cloud
-  hosts: 158.160.150.83
-  become: yes
-  vars:
-    ansible_ssh_common_args: "-o ConnectionAttempts=5 -o ConnectTimeout=60"
-  tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+name: CI/CD
 
-    - name: Install dependencies
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - curl
-        - docker.io
-        - docker-compose
+on: push
 
-    - name: Ensure Docker service is running
-      service:
-        name: docker
-        state: started
-        enabled: yes
+jobs:
+  lint:
+    runs-on: ubuntu-latest
 
-    - name: Stop existing Docker container
-      docker_container:
-        name: user-crud-app
-        state: stopped
-        force_kill: yes
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Remove existing Docker container
-      docker_container:
-        name: user-crud-app
-        state: absent
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, sqlite3
 
-    - name: Pull the latest Docker image
-      docker_image:
-        name: devdanilboe/user-crud-app
-        tag: latest
-        source: pull
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
 
-    - name: Run the Docker container
-      docker_container:
-        name: user-crud-app
-        image: devdanilboe/user-crud-app:latest
-        state: started
-        restart_policy: always
-        ports:
-          - "80:80"
+      - name: Install npm and composer dependencies
+        run: make install
 
-  handlers:
-    - name: Restart Docker
-      service:
-        name: docker
-        state: restarted
+      - name: Set permissions
+        run: sudo chmod -R 775 storage
+
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Run Duster
+        run: make lint
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, sqlite3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install npm and composer dependencies
+        run: make install
+
+      - name: Set permissions
+        run: sudo chmod -R 775 storage
+
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
+      - name: Add database path to .env
+        run: echo 'DB_DATABASE=database/database.sqlite' >> .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate
+
+      - name: Run build
+        run: make build
+
+      - name: Run tests
+        run: make test
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/user-crud-app:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.YOUR_PRIVATE_KEY }}
+
+      - name: Run Ansible Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "false"
+        run: |
+          ansible-playbook ansible/playbook.yml -i '158.160.150.83,' -u ty9991peterson
