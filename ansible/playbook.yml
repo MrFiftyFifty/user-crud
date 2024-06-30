@@ -56,6 +56,13 @@
         ports:
           - "80:80"
 
+    - name: Set permissions for project directory
+      file:
+        path: /home/ty9991peterson/user-crud
+        state: directory
+        mode: "0775"
+        recurse: yes
+
   handlers:
     - name: Restart Docker
       service:
