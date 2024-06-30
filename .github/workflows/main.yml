@@ -57,6 +57,9 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
+      - name: Create storage symbolic link
+        run: php artisan storage:link
+
       - name: Run migrations
         run: php artisan migrate
 

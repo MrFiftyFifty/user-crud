@@ -48,6 +48,14 @@
         ports:
           - "80:80"
 
+    - name: Create SQLite database file
+      command: touch /home/ty9991peterson/user-crud/database/database.sqlite
+
+    - name: Create storage symbolic link
+      command: php artisan storage:link
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
     - name: Restart Docker
       service:
         name: docker
