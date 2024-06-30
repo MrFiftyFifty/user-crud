@@ -56,7 +56,7 @@ RUN cp .env.example .env \
 RUN php artisan storage:link
 
 # Run migrations
-RUN php artisan migrate
+RUN touch /home/ty9991peterson/user-crud/database/database.sqlite && php artisan migrate
 
 # Build frontend assets
 RUN export NVM_DIR="$HOME/.nvm" \

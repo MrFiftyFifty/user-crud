@@ -56,6 +56,18 @@
         ports:
           - "80:80"
 
+    - name: Set ownership for project directory
+      command: chown -R www-data:www-data /home/ty9991peterson/user-crud
+
+    - name: Set permissions for storage directory
+      command: chmod -R 755 /home/ty9991peterson/user-crud/storage
+
+    - name: Set permissions for bootstrap/cache directory
+      command: chmod -R 755 /home/ty9991peterson/user-crud/bootstrap/cache
+
+    - name: Set permissions for vendor directory
+      command: chmod -R 755 /home/ty9991peterson/user-crud/vendor
+
     - name: Copy .env.example to .env
       command: cp .env.example .env
       args:
