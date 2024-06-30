@@ -30,16 +30,16 @@ COPY . /home/mrfiftyfifty/user-crud
 # Set working directory
 WORKDIR /home/mrfiftyfifty/user-crud
 
-# Set permissions before installing dependencies
-RUN chown -R www-data:www-data /home/mrfiftyfifty/user-crud \
-    && chmod -R 775 /home/mrfiftyfifty/user-crud
-
 # Install application dependencies
 RUN export NVM_DIR="$HOME/.nvm" \
     && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
     && npm install \
     && npm ci \
     && composer install
+
+# Set permissions
+RUN chown -R www-data:www-data /home/mrfiftyfifty/user-crud \
+    && chmod -R 775 /home/mrfiftyfifty/user-crud
 
 # Set up environment and generate application key
 RUN cp .env.example .env \
