@@ -45,7 +45,7 @@ RUN chown -R www-data:www-data /home/ty9991peterson/user-crud \
 RUN cp .env.example .env \
     && mkdir -p database \
     && touch /home/ty9991peterson/user-crud/database/database.sqlite \
-    && echo 'DB_DATABASE=/home/ty9991peterson/user-crud/database/database.sqlite' >> .env \
+    && echo 'DB_DATABASE=database/database.sqlite' >> .env \
     && chown -R www-data:www-data /home/ty9991peterson/user-crud/database \
     && chmod -R 777 /home/ty9991peterson/user-crud/database \
     && php artisan key:generate
