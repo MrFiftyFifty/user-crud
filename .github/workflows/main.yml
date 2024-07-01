@@ -48,14 +48,17 @@ jobs:
       - name: Install npm and composer dependencies
         run: make install
 
+      - name: Create database directory
+        run: mkdir -p database
+
+      - name: Create SQLite database file
+        run: touch database/database.sqlite
+
       - name: Copy .env.example to .env
         run: cp .env.example .env
 
       - name: Add database path to .env
-        run: echo 'DB_DATABASE=/home/mrfiftyfifty/user-crud/database/database.sqlite' >> .env
-
-      - name: Create database file
-        run: mkdir -p database && touch database/database.sqlite
+        run: echo 'DB_DATABASE=database/database.sqlite' >> .env
 
       - name: Generate application key
         run: php artisan key:generate
