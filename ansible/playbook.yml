@@ -47,14 +47,16 @@
         tag: latest
         source: pull
 
-    - name: Run the Docker container
-      docker_container:
-        name: user-crud-app
-        image: devdanilboe/user-crud-app:latest
-        state: started
-        restart_policy: always
-        ports:
-          - "80:80"
+    - name: Remove old project directory
+      file:
+        path: /home/ty9991peterson/user-crud
+        state: absent
+
+    - name: Clone the repository
+      git:
+        repo: "https://github.com/your-repo/user-crud.git"
+        dest: /home/ty9991peterson/user-crud
+        version: main
 
     - name: Set ownership for project directory
       command: chown -R www-data:www-data /home/ty9991peterson/user-crud
