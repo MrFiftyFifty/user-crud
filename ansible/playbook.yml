@@ -17,6 +17,7 @@
         - curl
         - docker.io
         - docker-compose
+        - git
 
     - name: Ensure Docker service is running
       service:
@@ -35,6 +36,13 @@
         state: directory
         owner: www-data
         group: www-data
+      when: project_dir.stat.exists == False
+
+    - name: Clone repository
+      git:
+        repo: "https://github.com/your-repo/user-crud.git"
+        dest: /home/ty9991peterson/user-crud
+        version: main
       when: project_dir.stat.exists == False
 
     - name: Check if Docker container exists
