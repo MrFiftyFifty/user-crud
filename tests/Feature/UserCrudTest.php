@@ -78,7 +78,7 @@ class UserCrudTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->delete("/users/{$user->id}");
+        $response = $this->post("/users/{$user->id}/delete");
 
         $response->assertRedirect('/users');
         $this->assertSoftDeleted('users', [
@@ -169,7 +169,7 @@ class UserCrudTest extends TestCase
         $avatar = UploadedFile::fake()->create('avatar.jpg');
         $user->update(['avatar' => $avatar->store('avatars', 'public')]);
 
-        $response = $this->delete("/users/{$user->id}");
+        $response = $this->post("/users/{$user->id}/delete");
 
         $response->assertRedirect('/users');
         $this->assertSoftDeleted('users', [
