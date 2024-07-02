@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_sqlite
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -29,8 +29,7 @@ COPY . /home/ty9991peterson/user-crud
 WORKDIR /home/ty9991peterson/user-crud
 
 # Install application dependencies
-RUN npm install \
-    && npm ci \
+RUN npm ci \
     && composer install
 
 # Set permissions
@@ -55,8 +54,11 @@ RUN chmod -R 777 /home/ty9991peterson/user-crud/storage /home/ty9991peterson/use
 # Run migrations
 RUN php artisan migrate
 
+# Update Vite configuration
+RUN sed -i 's/^import { defineConfig } from "vite";/const { defineConfig } = require("vite");/' /home/ty9991peterson/user-crud/vite.config.js
+
 # Build frontend assets
-RUN npm run build
+RUN NODE_OPTIONS=--openssl-legacy-provider npm run build
 
 # Configure Apache
 RUN echo '<VirtualHost *:80>\n\

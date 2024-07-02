@@ -4,6 +4,7 @@
   become: yes
   vars:
     ansible_ssh_common_args: "-o ConnectionAttempts=5 -o ConnectTimeout=60"
+    node_version: "18.x"
   tasks:
     - name: Update apt cache
       apt:
@@ -86,15 +87,19 @@
       when: project_dir.stat.exists == True
 
     - name: Install Node.js
-      apt:
-        name: nodejs
-        state: latest
-        update_cache: yes
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_{{ node_version }} | bash -
+        apt-get install -y nodejs
+      args:
+        warn: false
 
-    - name: Install npm
-      apt:
-        name: npm
-        state: latest
+    - name: Check Node.js version
+      command: node --version
+      register: node_version_output
+
+    - name: Display Node.js version
+      debug:
+        var: node_version_output.stdout
 
     - name: Install Composer dependencies
       command: composer install --prefer-dist --no-progress --no-interaction
@@ -140,10 +145,18 @@
       args:
         chdir: /home/ty9991peterson/user-crud
 
+    - name: Update Vite configuration
+      lineinfile:
+        path: /home/ty9991peterson/user-crud/vite.config.js
+        regexp: '^import \{ defineConfig \} from "vite";'
+        line: 'const { defineConfig } = require("vite");'
+
     - name: Build frontend assets
       command: npm run build
       args:
         chdir: /home/ty9991peterson/user-crud
+      environment:
+        NODE_OPTIONS: --openssl-legacy-provider
 
     - name: Check current directory state
       command: ls -la /home/ty9991peterson/user-crud
