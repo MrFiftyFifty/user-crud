@@ -12,15 +12,17 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && docker-php-ext-install pdo_sqlite
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
+# Install Node.js via nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
+    && export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && nvm install 18 \
+    && nvm use 18 \
+    && nvm alias default 18 \
+    && npm install -g npm
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Create project directory
-RUN mkdir -p /home/ty9991peterson/user-crud
 
 # Copy application files
 COPY . /home/ty9991peterson/user-crud
@@ -29,12 +31,16 @@ COPY . /home/ty9991peterson/user-crud
 WORKDIR /home/ty9991peterson/user-crud
 
 # Install application dependencies
-RUN npm ci \
+RUN export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && npm install \
+    && npm ci \
     && composer install
 
 # Set permissions
 RUN chown -R www-data:www-data /home/ty9991peterson/user-crud \
-    && chmod -R 777 /home/ty9991peterson/user-crud
+    && chmod -R 777 /home/ty9991peterson/user-crud \
+    && php artisan storage:link
 
 # Set up environment and generate application key
 RUN cp .env.example .env \
@@ -45,20 +51,13 @@ RUN cp .env.example .env \
     && chmod -R 777 /home/ty9991peterson/user-crud/database \
     && php artisan key:generate
 
-# Create storage symbolic link
-RUN php artisan storage:link
-
-# Set permissions for storage and cache directories
-RUN chmod -R 777 /home/ty9991peterson/user-crud/storage /home/ty9991peterson/user-crud/bootstrap/cache
-
 # Run migrations
 RUN php artisan migrate
 
-# Update Vite configuration
-RUN sed -i 's/^import { defineConfig } from "vite";/const { defineConfig } = require("vite");/' /home/ty9991peterson/user-crud/vite.config.js
-
 # Build frontend assets
-RUN NODE_OPTIONS=--openssl-legacy-provider npm run build
+RUN export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && npm run build
 
 # Configure Apache
 RUN echo '<VirtualHost *:80>\n\

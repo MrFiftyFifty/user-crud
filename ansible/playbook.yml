@@ -2,9 +2,6 @@
 - name: Deploy Laravel application to Yandex Cloud
   hosts: 158.160.150.83
   become: yes
-  vars:
-    ansible_ssh_common_args: "-o ConnectionAttempts=5 -o ConnectTimeout=60"
-    node_version: "18.x"
   tasks:
     - name: Update apt cache
       apt:
@@ -18,33 +15,12 @@
         - curl
         - docker.io
         - docker-compose
-        - git
 
     - name: Ensure Docker service is running
       service:
         name: docker
         state: started
         enabled: yes
-
-    - name: Check if project directory exists
-      stat:
-        path: /home/ty9991peterson/user-crud
-      register: project_dir
-
-    - name: Create project directory if it does not exist
-      file:
-        path: /home/ty9991peterson/user-crud
-        state: directory
-        owner: www-data
-        group: www-data
-      when: project_dir.stat.exists == False
-
-    - name: Clone repository
-      git:
-        repo: "https://github.com/your-repo/user-crud.git"
-        dest: /home/ty9991peterson/user-crud
-        version: main
-      when: project_dir.stat.exists == False
 
     - name: Check if Docker container exists
       shell: docker ps -a --filter "name=user-crud-app" --format "{{'{{'}}.Names{{'}}'}}"
@@ -78,94 +54,6 @@
         ports:
           - "80:80"
 
-    - name: Set ownership for project directory
-      command: chown -R www-data:www-data /home/ty9991peterson/user-crud
-      when: project_dir.stat.exists == True
-
-    - name: Set permissions for project directory
-      command: chmod -R 777 /home/ty9991peterson/user-crud
-      when: project_dir.stat.exists == True
-
-    - name: Install Node.js
-      shell: |
-        curl -fsSL https://deb.nodesource.com/setup_{{ node_version }} | bash -
-        apt-get install -y nodejs
-      args:
-        warn: false
-
-    - name: Check Node.js version
-      command: node --version
-      register: node_version_output
-
-    - name: Display Node.js version
-      debug:
-        var: node_version_output.stdout
-
-    - name: Install Composer dependencies
-      command: composer install --prefer-dist --no-progress --no-interaction
-      args:
-        chdir: /home/ty9991peterson/user-crud
-
-    - name: Install npm dependencies
-      command: npm ci
-      args:
-        chdir: /home/ty9991peterson/user-crud
-
-    - name: Copy .env.example to .env
-      command: cp .env.example .env
-      args:
-        chdir: /home/ty9991peterson/user-crud
-
-    - name: Add database path to .env
-      lineinfile:
-        path: /home/ty9991peterson/user-crud/.env
-        line: "DB_DATABASE=/home/ty9991peterson/user-crud/database/database.sqlite"
-        create: yes
-
-    - name: Generate application key
-      command: php artisan key:generate
-      args:
-        chdir: /home/ty9991peterson/user-crud
-
-    - name: Create SQLite database file
-      file:
-        path: /home/ty9991peterson/user-crud/database/database.sqlite
-        state: touch
-
-    - name: Create storage symbolic link
-      command: php artisan storage:link
-      args:
-        chdir: /home/ty9991peterson/user-crud
-
-    - name: Set permissions for storage and cache directories
-      command: chmod -R 777 /home/ty9991peterson/user-crud/storage /home/ty9991peterson/user-crud/bootstrap/cache
-
-    - name: Run migrations
-      command: php artisan migrate
-      args:
-        chdir: /home/ty9991peterson/user-crud
-
-    - name: Update Vite configuration
-      lineinfile:
-        path: /home/ty9991peterson/user-crud/vite.config.js
-        regexp: '^import \{ defineConfig \} from "vite";'
-        line: 'const { defineConfig } = require("vite");'
-
-    - name: Build frontend assets
-      command: npm run build
-      args:
-        chdir: /home/ty9991peterson/user-crud
-      environment:
-        NODE_OPTIONS: --openssl-legacy-provider
-
-    - name: Check current directory state
-      command: ls -la /home/ty9991peterson/user-crud
-      register: dir_state
-
-    - debug:
-        var: dir_state.stdout
-
-  handlers:
     - name: Restart Docker
       service:
         name: docker
