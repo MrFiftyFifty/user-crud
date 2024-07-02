@@ -12,14 +12,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && docker-php-ext-install pdo_sqlite
 
-# Install Node.js via nvm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
-    && export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && nvm install 18 \
-    && nvm use 18 \
-    && nvm alias default 18 \
-    && npm install -g npm
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -34,9 +29,7 @@ COPY . /home/ty9991peterson/user-crud
 WORKDIR /home/ty9991peterson/user-crud
 
 # Install application dependencies
-RUN export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && npm install \
+RUN npm install \
     && npm ci \
     && composer install
 
@@ -63,9 +56,7 @@ RUN chmod -R 777 /home/ty9991peterson/user-crud/storage /home/ty9991peterson/use
 RUN php artisan migrate
 
 # Build frontend assets
-RUN export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && npm run build
+RUN npm run build
 
 # Configure Apache
 RUN echo '<VirtualHost *:80>\n\

@@ -85,6 +85,17 @@
       command: chmod -R 777 /home/ty9991peterson/user-crud
       when: project_dir.stat.exists == True
 
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: latest
+        update_cache: yes
+
+    - name: Install npm
+      apt:
+        name: npm
+        state: latest
+
     - name: Install Composer dependencies
       command: composer install --prefer-dist --no-progress --no-interaction
       args:
