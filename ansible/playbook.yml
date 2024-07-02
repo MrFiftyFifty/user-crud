@@ -100,6 +100,12 @@
       args:
         chdir: /home/ty9991peterson/user-crud
 
+    - name: Add database path to .env
+      lineinfile:
+        path: /home/ty9991peterson/user-crud/.env
+        line: "DB_DATABASE=/home/ty9991peterson/user-crud/database/database.sqlite"
+        create: yes
+
     - name: Generate application key
       command: php artisan key:generate
       args:
@@ -112,6 +118,19 @@
 
     - name: Create storage symbolic link
       command: php artisan storage:link
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Set permissions for storage and cache directories
+      command: chmod -R 777 /home/ty9991peterson/user-crud/storage /home/ty9991peterson/user-crud/bootstrap/cache
+
+    - name: Run migrations
+      command: php artisan migrate
+      args:
+        chdir: /home/ty9991peterson/user-crud
+
+    - name: Build frontend assets
+      command: npm run build
       args:
         chdir: /home/ty9991peterson/user-crud
 

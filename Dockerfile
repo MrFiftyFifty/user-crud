@@ -56,6 +56,9 @@ RUN cp .env.example .env \
 # Create storage symbolic link
 RUN php artisan storage:link
 
+# Set permissions for storage and cache directories
+RUN chmod -R 777 /home/ty9991peterson/user-crud/storage /home/ty9991peterson/user-crud/bootstrap/cache
+
 # Run migrations
 RUN php artisan migrate
 
