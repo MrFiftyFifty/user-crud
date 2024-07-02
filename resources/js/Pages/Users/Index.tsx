@@ -22,7 +22,7 @@ const Index: React.FC<IndexProps> = ({ users }) => {
     const { t } = useTranslation();
 
     const handleDelete = (id: number) => {
-        Inertia.delete(route('users.destroy', { id }));
+        Inertia.post(route('users.delete', { id }));
     };
 
     const handleRestore = (id: number) => {

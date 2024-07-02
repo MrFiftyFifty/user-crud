@@ -61,8 +61,9 @@ class UserController extends Controller
         return redirect(route('users.index'))->with('message', __('messages.edit_user'));
     }
 
-    public function destroy(User $user)
+    public function delete($id)
     {
+        $user = User::findOrFail($id);
         $user->delete();
 
         return redirect(route('users.index'))->with('message', __('messages.delete_user'));
