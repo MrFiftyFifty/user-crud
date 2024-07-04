@@ -26,7 +26,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if (!$request->hasFile('avatar')) {
+        if (! $request->hasFile('avatar')) {
             return redirect()->back()->withErrors(['avatar' => __('messages.avatar_required')]);
         }
 
