@@ -81,6 +81,7 @@ const Create: React.FC = () => {
                     <Form.Control
                         type="file"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData("avatar", e.target.files ? e.target.files[0] : null)}
+                        required
                     />
                     {errors.avatar && <div className="text-danger">{errors.avatar}</div>}
                 </Form.Group>

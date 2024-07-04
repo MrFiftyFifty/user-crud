@@ -30,7 +30,7 @@ const Index: React.FC<IndexProps> = ({ users }) => {
     };
 
     const handleForceDelete = (id: number) => {
-        Inertia.delete(route('users.forceDelete', { id }));
+        Inertia.post(route('users.forceDelete', { id }));
     };
 
     const handleBan = (id: number) => {
@@ -102,13 +102,15 @@ const Index: React.FC<IndexProps> = ({ users }) => {
                                     </>
                                 ) : (
                                     <>
-                                        <Button
-                                            variant="warning"
-                                            href={route('users.edit', { id: user.id })}
-                                            className="me-2"
-                                        >
-                                            {t('edit_user')}
-                                        </Button>
+                                        {user.state !== 'App\\States\\Banned' && (
+                                            <Button
+                                                variant="warning"
+                                                href={route('users.edit', { id: user.id })}
+                                                className="me-2"
+                                            >
+                                                {t('edit_user')}
+                                            </Button>
+                                        )}
                                         <Button
                                             variant="danger"
                                             onClick={() => handleDelete(user.id)}

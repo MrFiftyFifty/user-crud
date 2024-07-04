@@ -1,7 +1,7 @@
-import React from "react";
-import { useForm } from "@inertiajs/inertia-react";
-import { Form, Button, Container } from "react-bootstrap";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { useForm } from '@inertiajs/inertia-react';
+import { Container, Form, Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 interface User {
     id: number;
@@ -10,6 +10,8 @@ interface User {
     gender: string;
     birthdate: string;
     avatar: string | null;
+    deleted_at: string | null;
+    state: string;
 }
 
 interface EditProps {
@@ -39,6 +41,10 @@ const Edit: React.FC<EditProps> = ({ user }) => {
             }
         });
     };
+
+    if (user.state === 'App\\States\\Banned') {
+        return <div>{t('user_banned')}</div>;
+    }
 
     return (
         <Container>
@@ -93,6 +99,7 @@ const Edit: React.FC<EditProps> = ({ user }) => {
                     <Form.Control
                         type="file"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setData("avatar", e.target.files ? e.target.files[0] : null)}
+                        required
                     />
                     {errors.avatar && <div className="text-danger">{errors.avatar}</div>}
                     {user.avatar && <img src={`/storage/${user.avatar}`} alt="Avatar" style={{ width: '100px', marginTop: '10px' }} />}

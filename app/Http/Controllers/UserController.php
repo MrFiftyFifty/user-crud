@@ -26,9 +26,11 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('avatar')) {
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        if (!$request->hasFile('avatar')) {
+            return redirect()->back()->withErrors(['avatar' => __('messages.avatar_required')]);
         }
+
+        $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
 
         User::create($data);
 
@@ -42,6 +44,10 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if ($user->state === Banned::class) {
+            return redirect(route('users.index'))->with('error', __('messages.user_banned'));
+        }
+
         return Inertia::render('Users/Edit', ['user' => $user]);
     }
 
@@ -64,6 +70,9 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = User::findOrFail($id);
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
         $user->delete();
 
         return redirect(route('users.index'))->with('message', __('messages.delete_user'));
